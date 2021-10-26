@@ -1,82 +1,110 @@
-
-
-import { React, useEffect, useState, useContext } from "react";
+import { React, useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
 import axios from "axios";
+
 import styled from "styled-components";
 import ProfileCard from "../Componants/ProfileCard/ProfileCard";
 import DisplayCard from "../Componants/DisplayCard/DisplayCard";
-import ExpandedData from "./ExpandedData";
 
-import MyContext from '../Componants/Context/Context'
+//custom styled componants 
+import { SearchBar, SearchContainer, SearchIcon, Grid, Container } from "../Componants/StyledComponants/StyledComponants";
 
 
-const Users = () => {
 
-    /* const context = useContext(MyContext);
-    const { ID } = context;
-
-    console.log(ID) */
+const UserView = () => {
 
     const [users, setUsers] = useState([])
+
+    const target = useRef(null)
+    const [hoverState, setHoverState] = useState(false)
+    const [focus, setFocus] = useState(false)
+    const reveal = hoverState || focus
+
+    const [search, setSearch] = useState("")
+    const handleSearch = (e) => {
+        e.preventDefault()
+        console.log(e.target.value)
+        setSearch(e.target.value)
+
+    }
+    console.log(search)
+
+    useEffect(() => {
+        target.current.value = ""
+    }, [hoverState])
+
+
     const url = "http://localhost:3000/api/search?length=32"
     useEffect(() => {
         const fetchData = async () => {
             const user = await axios.get(url)
             console.log(user.data.items)
             setUsers(user.data.items)
-            //const picURl = (profiles.data.items[1].picture.url)
-            //console.log(picURl)
         }
         fetchData();
-    }, [])
+    }, [url])
+
+
 
     return (
         <>
-            <Grid>
-                {users.map((user) => (<> <ProfileCard key={user.id} user={user} /> <ExpandedUserData key={user.id} user={user} /> </>))}
-            </Grid>
+
+
+
+            <Container>
+
+                <SearchContainer
+                    onMouseEnter={() => setHoverState(true)}
+                    onMouseLeave={() => setHoverState(false)}
+                    onFocus={() => setFocus(true)}
+                    onBlur={() => setFocus(false)}
+                    reveal={reveal}
+                >
+
+                    <SearchBar ref={target} reveal={reveal} onChange={handleSearch} />
+                    <SearchIcon />
+                </SearchContainer>
+
+
+                <Grid>
+                    {users.map((user) => (<> <ProfileCard key={user.id} user={user} />  </>))}
+                </Grid>
+            </Container>
+
+
         </>
     )
 }
 
 
-const ExpandedUserData = ({ user }) => {
-    //console.log(user)
-    const { id } = user
-    //console.log(`${id} `)
-    const [infos, setInfo] = useState([])
+const ExpandedUserData = () => {
 
+    const { id } = useParams()
+    console.log(id)
+
+    const [detailedInfo, setDetailedInfo] = useState([])
     const uri = `http://localhost:3000/api/profiles?ids=${id}`
-
     useEffect(() => {
-
         const fetchData = async () => {
             const info = await axios.get(uri)
             console.log(info.data)
-            setInfo(info.data)
+            setDetailedInfo(info.data)
         }
-
         fetchData();
+    }, [uri])
 
-    }, [])
 
+    //console.log(id)
     return (
         <>
-            {infos.map((info) => (<>  <DisplayCard info={info} /> </>))}
+
+            {detailedInfo.map((info) => (<> <DisplayCard key={id} info={info} />  </>))}
+
+
         </>
     )
 }
 
-const Grid = styled.div`
-display:grid;
-gap:10px;
-height:80vh;
-width:80vw;
-grid-template-columns:1fr 1fr 1fr 1fr;
-grid-template-rows:1fr 1fr 1fr 1fr;
-border:2px dotted black;
-align-self:center;
-`;
 
 
-export { Users, ExpandedUserData }
+export { UserView, ExpandedUserData }

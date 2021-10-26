@@ -5,7 +5,7 @@ import ShowCase from "./Pages/ShowCase/ShowCase";
 import NavigationBar from "./Componants/NavigationBar/NavigationBar"
 import Form from "./Pages/Form/Form";
 import DisplayCard from "./Componants/DisplayCard/DisplayCard";
-import ExpandedUserData from "./Library/ExpandedData";
+import { ExpandedUserData } from "./Library/Library";
 import { Users } from "./Library/Library";
 
 
@@ -23,11 +23,16 @@ const App = () => {
       <Route exact path="/form">
         <Form />
       </Route>
+      {/* <Route
+        exact
+        path='/profileview/:id/:url'>
+        <ExpandedUserData />
+      </Route> */}
       <Route
         exact
-        path='/profileview/:id'
-        component={ExpandedUserData}
-      />
+        path='/profileview/:id/'>
+        <ExpandedUserData />
+      </Route>
 
     </Router>
   );
