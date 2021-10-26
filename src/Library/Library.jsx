@@ -34,7 +34,7 @@ const UserView = () => {
     }, [hoverState])
 
 
-    const url = "http://localhost:3000/api/search?length=32"
+    const url = "https://jamesxromeo.herokuapp.com/api/search?length=32"
     useEffect(() => {
         const fetchData = async () => {
             const user = await axios.get(url)

@@ -48,7 +48,7 @@ const ProfileCard = ({ user }) => {
 
     const [detailedInfo, setDetailedInfo] = useState([])
 
-    const uri = `http://localhost:3000/api/profiles?ids=${id}`
+    const uri = `https://jamesxromeo.herokuapp.com/api/profiles?ids=${id}`
     useEffect(() => {
         const fetchData = async () => {
             const info = await axios.get(uri)
